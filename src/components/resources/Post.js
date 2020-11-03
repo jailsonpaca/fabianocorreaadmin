@@ -1,16 +1,16 @@
 import React, { useState, useCallback, Fragment } from 'react';
 import { List, Edit, Datagrid, useMutation, EditButton, TextField, ImageField, DateField, BooleanField, Filter, Create, SimpleForm, TextInput, DateInput, BooleanInput, Toolbar, SaveButton, useCreate, useRedirect, useNotify, useUpdate } from 'react-admin';
 import { useMediaQuery, ListItem, ListItemText, Button as ButtonMui, Snackbar } from '@material-ui/core';
-import useLongPress from './useLongPress';
+import useLongPress from '../utils/useLongPress';
 import DeleteIcon from '@material-ui/icons/Delete';
 import Dialog from "@material-ui/core/Dialog";
 import DialogTitle from "@material-ui/core/DialogTitle";
 import DialogActions from "@material-ui/core/DialogActions";
-import UrlPost from './UrlPost';
-import UrlPostEdit from './UrlPostEdit';
-import CustomTextInput from './CustomTextInput';
+import UrlPost from './posts/UrlPost';
+import UrlPostEdit from './posts/UrlPostEdit';
+import CustomTextInput from '../CustomTextInput';
 import { Alert } from '@material-ui/lab';
-import { storage } from "./firebaseLoad";
+import { storage } from "./../../provider";
 
 
 async function urlToFile(url) {

@@ -1,47 +1,49 @@
 import React, { useState, Fragment } from 'react';
-import { List, Edit, Filter, Datagrid, useMutation, EditButton, TextField, ArrayInput,ArrayField , SimpleFormIterator,SingleFieldList, BooleanField, Create, SimpleForm, TextInput, BooleanInput } from 'react-admin';
+import {
+    List, Edit, Filter, Datagrid, useMutation, EditButton, TextField, FileField,
+    BooleanField, Create, SimpleForm, TextInput, FileInput, BooleanInput
+} from 'react-admin';
 import { useMediaQuery, ListItem, ListItemText, Button as ButtonMui } from '@material-ui/core';
-import { ColorField, ColorInput } from 'react-admin-color-input';
-import useLongPress from './useLongPress';
+import useLongPress from './../utils/useLongPress';
 import DeleteIcon from '@material-ui/icons/Delete';
 import Dialog from "@material-ui/core/Dialog";
 import DialogTitle from "@material-ui/core/DialogTitle";
 import DialogActions from "@material-ui/core/DialogActions";
 
-const validatePlanos = (values) => {
-   /* const errors = {};
-    if (!values.title) {
-        errors.title = ['É necessário preencher o title'];
-    }
-    if (!values.description) {
-        errors.description = ['É necessário preencher a descrição'];
-    }
-    if (!values.price) {
-        errors.price = ['É necessário preencher o preço da sessão'];
-    }
-    if (!values.totalPrice) {
-        errors.totalPrice = ['É necessário preencher o preço do pacote'];
-    }
-    if (!values.obs) {
-        errors.obs = ['É necessário preencher as observações'];
-    }
-    if (!values.color) {
-        errors.color = ['É necessário preencher a cor'];
-    }
-    return errors;*/
+const validateDepoimentos = (values) => {
+    /* const errors = {};
+     if (!values.name) {
+         errors.name = ['É necessário preencher o name'];
+     }
+     if (!values.description) {
+         errors.description = ['É necessário preencher a descrição'];
+     }
+     if (!values.price) {
+         errors.price = ['É necessário preencher o preço da sessão'];
+     }
+     if (!values.totalPrice) {
+         errors.totalPrice = ['É necessário preencher o preço do pacote'];
+     }
+     if (!values.obs) {
+         errors.obs = ['É necessário preencher as observações'];
+     }
+     if (!values.color) {
+         errors.color = ['É necessário preencher a cor'];
+     }
+     return errors;*/
 };
 /*
 var originalLog = console.error
 console.error = function log(...args) {
-	if (args.length > 0 && typeof args[0] === "string" && /^Warning: Missing translation/.test(args[0])) {
-		return
-	}
-	originalLog.apply(console, args)
+    if (args.length > 0 && typeof args[0] === "string" && /^Warning: Missing translation/.test(args[0])) {
+        return
+    }
+    originalLog.apply(console, args)
 }*/
 
-const PlanosFilter = (props) => (
+const DepoimentosFilter = (props) => (
     <Filter {...props}>
-        <TextInput label="Pesquisar" source="title" alwaysOn />
+        <TextInput label="Pesquisar" source="name" alwaysOn />
     </Filter>
 );
 
@@ -76,10 +78,10 @@ const CustomList = ({ ids, data, basePath, handleLongPress, setId }) => {
                     onMouseLeave={() => backspaceLongPress.onMouseLeave()}
                     onTouchStart={() => handleTouchStart(id)}
                     onTouchEnd={() => backspaceLongPress.onTouchEnd()}>
-                    <ListItemText multiline="true" primary={<TextField source="title" record={data[id]} />}
+                    <ListItemText multiline="true" primary={<TextField source="name" record={data[id]} />}
                         secondary={`${data[id].published ? ("Publicado") : ("Não Publicado")}`} />
                     <ListItemText multiline="true" primary={`R$ ${data[id].totalPrice}`} />
-                    <EditButton resource="plans" basePath={basePath} record={data[id]} />
+                    <EditButton resource="depoiments" basePath={basePath} record={data[id]} />
                 </ListItem>
             )}
         </div>
@@ -90,7 +92,7 @@ CustomList.defaultProps = {
     ids: [],
 };
 
-export const ListPlanos = (props) => {
+export const ListDepoimentos = (props) => {
     const isSmall = useMediaQuery(theme => theme.breakpoints.down('sm'));
     const [showDialog, setShowDialog] = useState(false);
     const [id, setId] = useState('');
@@ -108,30 +110,23 @@ export const ListPlanos = (props) => {
                 fullWidth
                 open={showDialog}
                 onClose={() => handleLongPress(false)}
-                aria-label="Excluir plano"
+                aria-label="Excluir depoimento"
             >
-                <DialogTitle>Deseja excluir este card dos Planos?</DialogTitle>
+                <DialogTitle>Deseja excluir este card dos Depoimentos?</DialogTitle>
                 <DialogActions>
                     <CustomDeleteButton id={id} />
                 </DialogActions>
             </Dialog>
-            <List {...props} title="Planos" filters={<PlanosFilter />}>
+            <List {...props} title="Depoimentos" filters={<DepoimentosFilter />}>
                 {isSmall ? (
                     <CustomList handleLongPress={handleLongPress} setId={handleSetId} />
                 ) : (
                         <Datagrid rowClick="edit">
                             <TextField source="id" />
-                            <TextField source="title" label="Título" />
+                            <TextField source="name" label="Nome" />
+                            <TextField source="job" label="Profissão" />
                             <TextField source="description" label="Descrição" />
-                            <TextField source="price" label="Preço por sessão" />
-                            <TextField source="totalPrice" label="Preço do pacote" />
-                            <ArrayField source="obs" label="Obs">
-                                <SingleFieldList>
-                                    <TextField />
-                                </SingleFieldList>
-                            </ArrayField>
-                            {/*<TextField source="obs" multiline label="Obs" />*/}
-                            <ColorField source="color" label="Cor" />
+                            <FileField source="image.src" title="image.title" label="Foto" />
                             <BooleanField source="published" label="Publicar" />
                         </Datagrid>
                     )}
@@ -141,23 +136,18 @@ export const ListPlanos = (props) => {
 };
 
 
-export const EditPlanos = (props) => {
+export const EditDepoimentos = (props) => {
 
     return (
         <Edit {...props}>
-            <SimpleForm validate={validatePlanos}>
+            <SimpleForm validate={validateDepoimentos}>
                 <TextInput disabled source="id" />
-                <TextInput source="title" label="Título" />
+                <TextInput source="name" label="Nome" />
+                <TextInput source="job" label="Profissão" />
                 <TextInput source="description" label="Descrição" />
-                <TextInput source="price" label="Preço por sessão" />
-                <TextInput source="totalPrice" label="Preço do pacote" />
-                <ArrayInput source="obs" label="Obs">
-                    <SimpleFormIterator>
-                        <TextInput />
-                    </SimpleFormIterator>
-                </ArrayInput>
-                {/*<TextInput source="obs" multiline label="Obs" />*/}
-                <ColorInput source="color" label="Cor" />
+                <FileInput source="image" label="Foto" accept="image/*">
+                    <FileField source="image" title="title" />
+                </FileInput>
                 <BooleanInput source="published" label="Publicado" />
             </SimpleForm>
         </Edit>
@@ -165,7 +155,7 @@ export const EditPlanos = (props) => {
 };
 
 
-export const CreatePlanos = (props) => {
+export const CreateDepoimentos = (props) => {
 
     var makeID = function (toSet) {
         var newId = Math.random().toString(36).substr(2, 9);
@@ -174,19 +164,14 @@ export const CreatePlanos = (props) => {
 
     return (
         <Create {...props}>
-            <SimpleForm validate={validatePlanos}>
+            <SimpleForm validate={validateDepoimentos}>
                 <TextInput disabled source="id" defaultValue={React.useMemo(() => makeID(true), [])} />
-                <TextInput source="title" label="Título" />
+                <TextInput source="name" label="Nome" />
+                <TextInput source="job" label="Profissão" />
                 <TextInput source="description" label="Descrição" />
-                <TextInput source="price" label="Preço por sessão" />
-                <TextInput source="totalPrice" label="Preço do pacote" />
-                <ArrayInput source="obs" label="Obs">
-                    <SimpleFormIterator>
-                        <TextInput />
-                    </SimpleFormIterator>
-                </ArrayInput>
-                {/*<TextInput  multiline label="Obs" />*/}
-                <TextInput source="color    " label="Cor" />
+                <FileInput source="image" label="Foto" accept="image/*">
+                    <FileField source="image" title="title" />
+                </FileInput>
                 <BooleanInput source="published" label="Público" defaultValue={false} />
             </SimpleForm>
         </Create>
